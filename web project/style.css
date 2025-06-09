@@ -1,0 +1,23 @@
+#table{
+text-align: center;
+width: 100%;
+display: flex;
+background-color: blueviolet;
+
+}
+body{
+    background: center;
+}
+#para{
+    text-align: left;
+    background-color: pink;
+}
+#search{
+    text-align:center;
+    background-color: rgb(202, 198, 223);
+    color:rgb(206, 162, 18);
+
+}
+#button{
+    text-align: center;
+}

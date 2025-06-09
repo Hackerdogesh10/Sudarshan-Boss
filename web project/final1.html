@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameVault - Ultimate Gaming Experience</title>
+    <style>
+        :root {
+            --primary-bg: #0f172a;
+            --secondary-bg: #1e293b;
+            --accent-color: #06d6a0;
+            --accent-secondary: #f72585;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --hover-bg: rgba(6, 214, 160, 0.1);
+            --border-color: rgba(6, 214, 160, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, #1a1a2e 50%, #16213e 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            grid-template-rows: 80px 1fr;
+            grid-template-areas:
+                "sidebar header rightbar"
+                "sidebar main rightbar";
+            min-height: 100vh;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            grid-area: header;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-bg);
+            padding: 0 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 30px;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+            border-radius: 30px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-btn,
+        .settings-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            grid-area: sidebar;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin: 8px 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-radius: 15px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--hover-bg);
+            color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .nav-icon {
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+
+        .friends-section {
+            margin-top: 40px;
+        }
+
+        .section-title {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .friend-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .friend-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .friend-item:hover {
+            background: var(--hover-bg);
+        }
+
+        .friend-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #4ade80, #22d3ee);
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            grid-area: main;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .hero-section {
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-badge {
+            background: linear-gradient(45deg, var(--accent-secondary), #ff6b9d);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, var(--text-primary), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-description {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--accent-color), #00b4d8);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(6, 214, 160, 0.3);
+        }
+
+        .games-section {
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .section-header h2 {
+            font-size: 1.8rem;
+            color: var(--text-primary);
+        }
+
+        .view-all-btn {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent-color);
+        }
+
+        .game-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .game-info {
+            padding: 25px;
+        }
+
+        .game-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .game-genre {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .game-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .game-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-play {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-wishlist {
+            background: transparent;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+
+        /* Right Sidebar */
+        .right-sidebar {
+            grid-area: rightbar;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .library-card,
+        .stats-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .library-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .library-item:hover {
+            background: var(--hover-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin: 0 -15px;
+        }
+
+        .library-item:last-child {
+            border-bottom: none;
+        }
+
+        .library-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .library-info h4 {
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .library-info p {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .download-progress {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-value {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "header"
+                    "main";
+            }
+
+            .sidebar,
+            .right-sidebar {
+                display: none;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Success Animation */
+        @keyframes success {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .success {
+            animation: success 0.3s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">GameVault</div>
+            <div class="search-container">
+                <input type="text" class="search-box" placeholder="Search games, friends, or genres..."
+                    id="searchInput">
+            </div>
+            <div class="user-section">
+                <button class="notification-btn" id="notificationBtn">🔔</button>
+                <button class="settings-btn" id="settingsBtn">⚙️</button>
+                <div class="user-avatar" id="userAvatar">JD</div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" data-page="dashboard">
+                        <span class="nav-icon">🏠</span>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="library">
+                        <span class="nav-icon">📚</span>
+                        My Library
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="store">
+                        <span class="nav-icon">🛒</span>
+                        Game Store
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="community">
+                        <span class="nav-icon">👥</span>
+                        Community
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="achievements">
+                        <span class="nav-icon">🏆</span>
+                        Achievements
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="settings">
+                        <span class="nav-icon">⚙️</span>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+
+            <div class="friends-section">
+                <h3 class="section-title">Online Friends</h3>
+                <div class="friend-list" id="friendsList">
+                    <!-- Friends will be populated by JavaScript -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <span class="hero-badge">🔥 Trending Now</span>
+                <h1 class="hero-title">Cyberpunk 2077: Phantom Liberty</h1>
+                <p class="hero-description">
+                    Experience the next chapter in V's story with the Phantom Liberty expansion. Navigate the dangerous
+                    world of Night City's federal district in this spy-thriller expansion featuring Keanu Reeves.
+                </p>
+                <div class="hero-actions">
+                    <button class="btn btn-primary" id="playNowBtn">
+                        ▶️ Play Now
+                    </button>
+                    <button class="btn btn-secondary" id="addWishlistBtn">
+                        ❤️ Add to Wishlist
+                    </button>
+                </div>
+            </section>
+
+            <!-- Popular Games -->
+            <section class="games-section">
+                <div class="section-header">
+                    <h2>Popular Games</h2>
+                    <a href="#" class="view-all-btn">View All →</a>
+                </div>
+                <div class="games-grid" id="gamesGrid">
+                    <!-- Games will be populated by JavaScript -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="right-sidebar">
+            <!-- My Library -->
+            <div class="library-card">
+                <h3 class="card-title">My Library</h3>
+                <div id="libraryItems">
+                    <!-- Library items will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Gaming Stats -->
+            <div class="stats-card">
+                <h3 class="card-title">Gaming Stats</h3>
+                <div class="stat-item">
+                    <span>Games Played</span>
+                    <span class="stat-value">47</span>
+                </div>
+                <div class="stat-item">
+                    <span>Hours Played</span>
+                    <span class="stat-value">1,247</span>
+                </div>
+                <div class="stat-item">
+                    <span>Achievements</span>
+                    <span class="stat-value">156</span>
+                </div>
+                <div class="stat-item">
+                    <span>Friend Rank</span>
+                    <span class="stat-value">#24</span>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        // Application State
+        const AppState = {
+            currentPage: 'dashboard',
+            user: { name: 'John Doe', avatar: 'JD' },
+            notifications: 3,
+            isLoading: false
+        };
+
+        // Utility Functions
+        const utils = {
+            createElement: (tag, className, content) => {
+                const element = document.createElement(tag);
+                if (className) element.className = className;
+                if (content) element.innerHTML = content;
+                return element;
+            },
+
+            showNotification: (message, type = 'info') => {
+                const notification = utils.createElement('div', `notification ${type}`, message);
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 3000);
+            },
+
+            animateButton: (button, newText, duration = 2000) => {
+                const originalText = button.innerHTML;
+                button.classList.add('loading');
+                button.innerHTML = newText;
+                button.disabled = true;
+
+                setTimeout(() => {
+                    button.classList.remove('loading');
+                    button.classList.add('success');
+                    button.disabled = false;
+
+                    setTimeout(() => {
+                        button.classList.remove('success');
+                        button.innerHTML = originalText;
+                    }, 1000);
+                }, duration);
+            }
+        };
+
+        // Data Management
+        const gameData = {
+            friends: [
+                { name: 'Alex Chen', status: 'online', game: 'Cyberpunk 2077' },
+                { name: 'Sarah Kim', status: 'online', game: 'Valorant' },
+                { name: 'Mike Johnson', status: 'away', game: 'Offline' },
+                { name: 'Emma Wilson', status: 'online', game: 'Fortnite' }
+            ],
+
+            popularGames: [
+                { title: 'Baldur\'s Gate 3', genre: 'RPG', icon: '⚔️', gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
+                { title: 'Starfield', genre: 'Space RPG', icon: '🚀', gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
+                { title: 'Spider-Man 2', genre: 'Action', icon: '🕷️', gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
+                { title: 'Alan Wake 2', genre: 'Horror', icon: '🔦', gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' }
+            ],
+
+            libraryGames: [
+                { title: 'God of War', status: 'installed', icon: '⚡', progress: 100 },
+                { title: 'Horizon Zero Dawn', status: 'downloading', icon: '🏹', progress: 65 },
+                { title: 'Death Stranding', status: 'queued', icon: '📦', progress: 0 },
+                { title: 'The Witcher 3', status: 'installed', icon: '🗡️', progress: 100 }
+            ]
+        };
+
+        // Component Rendering Functions
+        const renderFriends = () => {
+            const friendsList = document.getElementById('friendsList');
+            friendsList.innerHTML = '';
+
+            gameData.friends.forEach(friend => {
+                const friendElement = utils.createElement('div', 'friend-item');
+                friendElement.innerHTML = `
+                    <div class="friend-avatar">${friend.name.charAt(0)}</div>
+                    <div>
+                        <div style="font-weight: 500;">${friend.name}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-secondary);">${friend.game}</div>
+                    </div>
+                `;
+                friendElement.addEventListener('click', () => handleFriendClick(friend));
+                friendsList.appendChild(friendElement);
+            });
+        };
+
+        const renderGames = () => {
+            const gamesGrid = document.getElementById('gamesGrid');
+            gamesGrid.innerHTML = '';
+
+            gameData.popularGames.forEach(game => {
+                const gameCard = utils.createElement('div', 'game-card');
+                gameCard.innerHTML = `
+                    <div class="game-image" style="background: ${game.gradient}">
+                        ${game.icon}
+                    </div>
+                    <div class="game-info">
+                        <h3 class="game-title">${game.title}</h3>
+                        <p class="game-genre">${game.genre}</p>
+                        <div class="game-actions">
+                            <button class="game-btn btn-play" onclick="playGame('${game.title}')">Play</button>
+                            <button class="game-btn btn-wishlist" onclick="addToWishlist('${game.title}')">Wishlist</button>
+                        </div>
+                    </div>
+                `;
+                gamesGrid.appendChild(gameCard);
+            });
+        };
+
+        const renderLibrary = () => {
+            const libraryItems = document.getElementById('libraryItems');
+            libraryItems.innerHTML = '';
+
+            gameData.libraryGames.forEach(game => {
+                const libraryItem = utils.createElement('div', 'library-item');
+                libraryItem.innerHTML = `
+                    <div class="library-icon">${game.icon}</div>
+                    <div class="library-info">
+                        <h4>${game.title}</h4>
+                        <p>${game.status === 'downloading' ? `${game.progress}%` : game.status}</p>
+                    </div>
+                    <div class="download-progress" onclick="handleLibraryAction('${game.title}', '${game.status}')">
+                        ${game.status === 'installed' ? '▶️' : game.status === 'downloading' ? '⏸️' : '⬇️'}
+                    </div>
+                `;
+                libraryItems.appendChild(libraryItem);
+            });
+        };
+
+        // Event Handlers
+        const handleNavigation = (page) => {
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // Add active class to clicked nav link
+            document.querySelector(`[data-page="${page}"]`).classList.add('active');
+
+            AppState.currentPage = page;
+            utils.showNotification(`Navigated to ${page.charAt(0).toUpperCase() + page.slice(1)}`, 'success');
+        };
+
+        const handleFriendClick = (friend) => {
+            utils.showNotification(`Starting chat with ${friend.name}...`, 'info');
+        };
+
+        const handleSearch = (query) => {
+            if (query.length > 2) {
+                const filteredGames = gameData.popularGames.filter(game =>
+                    game.title.toLowerCase().includes(query.toLowerCase()) ||
+                    game.genre.toLowerCase().includes(query.toLowerCase())
+                );
+                utils.showNotification(`Found ${filteredGames.length} results for "${query}"`, 'info');
+            }
+        };
+
+        // Game Action Functions
+        const playGame = (gameTitle) => {
+            const button = event.target;
+            utils.animateButton(button, '🎮 Launching...', 1500);
+            utils.showNotification(`Launching ${gameTitle}...`, 'success');
+        };
+
+        const addToWishlist = (gameTitle) => {
+            const button = event.target;
+            utils.animateButton(button, '❤️ Added!', 1000);
+            utils.showNotification(`${gameTitle} added to wishlist!`, 'success');
+        };
+
+        const handleLibraryAction = (gameTitle, status) => {
+            const actions = {
+                'installed': () => {
+                    utils.showNotification(`Launching ${gameTitle}...`, 'success');
+                },
+                'downloading': () => {
+                    utils.showNotification(`Pausing download for ${gameTitle}`, 'info');
+                },
+                'queued': () => {
+                    utils.showNotification(`Starting download for ${gameTitle}...`, 'info');
+                }
+            };
+
+            actions[status]();
+        };
+
+        // Main Button Handlers
+        const handlePlayNow = () => {
+            const button = document.getElementById('playNowBtn');
+            utils.animateButton(button, '🎮 Launching...', 2000);
+            utils.showNotification('Launching Cyberpunk 2077: Phantom Liberty...', 'success');
+        };
+
+        const handleAddToWishlist = () => {
+            const button = document.getElementById('addWishlistBtn');
+            utils.animateButton(button, '❤️ Added to Wishlist!', 1500);
+            utils.showNotification('Game added to your wishlist!', 'success');
+        };
+
+        const handleNotifications = () => {
+            AppState.notifications = 0;
+            utils.showNotification('All notifications cleared!', 'info');
+        };
+
+        const handleSettings = () => {
+            utils.showNotification('Opening settings...', 'info');
+        };
+
+        const handleUserProfile = () => {
+            utils.showNotification('Opening user profile...', 'info');
+        };
+
+        // Event Listeners Setup
+        const initializeEventListeners = () => {
+            // Navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    handleNavigation(link.dataset.page);
+                });
+            });
+
+            // Search
+            const searchInput = document.getElementById('searchInput');
+            let searchTimeout;
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => handleSearch(e.target.value), 300);
+            });
+
+            // Header buttons
+            document.getElementById('playNowBtn').addEventListener('click', handlePlayNow);
+            document.getElementById('addWishlistBtn').addEventListener('click', handleAddToWishlist);
+            document.getElementById('notificationBtn').addEventListener('click', handleNotifications);
+            document.getElementById('settingsBtn').addEventListener('click', handleSettings);
+            document.getElementById('userAvatar').addEventListener('click', handleUserProfile);
+
+            // Hover effects for buttons
+            document.querySelectorAll('.btn, .nav-link, .game-card').forEach(element => {
+                element.addEventListener('mouseenter', function () {
+                    this.style.transform = 'translateY(-2px)';
+                });
+
+                element.addEventListener('mouseleave', function () {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        };
+
+        // Application Initialization
+        const initializeApp = () => {
+            renderFriends();
+            renderGames();
+            renderLibrary();
+            initializeEventListeners();
+
+            utils.showNotification('Welcome to GameVault!', 'success');
+            console.log('GameVault application initialized successfully');
+        };
+
+        // Start the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+    <footer>
+        <p>&copy; 2025 GameVault - Ultimate Gaming Experience. All Right Reserved.  </p>
+    </footer>
+</body>
+
+</html>

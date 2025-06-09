@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open World Game</title>
+    <style>
+        #gameContainer {
+            width: 800px;
+            height: 600px;
+            border: 2px solid black;
+            position: relative;
+            overflow: hidden;
+            background-color: #87CEEB;
+        }
+
+        #player {
+            width: 50px;
+            height: 50px;
+            background-color: red;
+            position: absolute;
+            left: 375px;
+            top: 275px;
+        }
+
+        .terrain {
+            position: absolute;
+            background-color: #228B22;
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="player"></div>
+    </div>
+
+    <script>
+        const player = document.getElementById('player');
+        const gameContainer = document.getElementById('gameContainer');
+        let playerX = 375;
+        let playerY = 275;
+        const speed = 5;
+
+        // Handle keyboard input
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowLeft':
+                    playerX = Math.max(0, playerX - speed);
+                    break;
+                case 'ArrowRight':
+                    playerX = Math.min(750, playerX + speed);
+                    break;
+                case 'ArrowUp':
+                    playerY = Math.max(0, playerY - speed);
+                    break;
+                case 'ArrowDown':
+                    playerY = Math.min(550, playerY + speed);
+                    break;
+            }
+            player.style.left = playerX + 'px';
+            player.style.top = playerY + 'px';
+        });
+
+        // Generate random terrain
+        function generateTerrain() {
+            for(let i = 0; i < 10; i++) {
+                const terrain = document.createElement('div');
+                terrain.className = 'terrain';
+                terrain.style.left = Math.random() * 700 + 'px';
+                terrain.style.top = Math.random() * 500 + 'px';
+                gameContainer.appendChild(terrain);
+            }
+        }
+
+        generateTerrain();
+    </script>
+</body>
+</html>

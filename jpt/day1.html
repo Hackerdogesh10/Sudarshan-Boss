@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(45deg, #6b5b95, #a593c5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .converter-box {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        input,
+        select {
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        select:focus {
+            box-shadow: 0 0 0 3px rgba(107, 91, 149, 0.3);
+        }
+
+        button {
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            background: #6b5b95;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #59487d;
+            transform: translateY(-2px);
+        }
+
+        #result {
+            color: #fff;
+            text-align: center;
+            font-size: 1.2rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #fff;
+            margin-top: 1rem;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>💰 Currency Converter</h1>
+        <div class="converter-box">
+            <div class="input-group">
+                <label>Amount</label>
+                <input type="number" id="amount" placeholder="Enter amount">
+            </div>
+
+            <div class="input-group">
+                <label>From Currency</label>
+                <select id="from-currency">
+                    <option value="USD">USD - US Dollar</option>
+                    <option value="NPR">NPR - Nepalese Rupee</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="GBP">GBP - British Pound</option>
+                    <option value="JPY">JPY - Japanese Yen</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>To Currency</label>
+                <select id="to-currency">
+                    <option value="NPR">NPR - Nepalese Rupee</option>
+                    <option value="USD">USD - US Dollar</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="GBP">GBP - British Pound</option>
+                    <option value="JPY">JPY - Japanese Yen</option>
+                </select>
+            </div>
+
+            <button onclick="convertCurrency()">Convert</button>
+            <div id="result"></div>
+            <div class="loading">
+                <div class="spinner"></div>
+                Converting...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = 'YOUR_API_KEY'; // Get from exchangerate-api.com
+        const API_URL = `https://v6.exchangerate-api.com/v6/${API_KEY}/latest/`;
+
+        async function convertCurrency() {
+            const amount = document.getElementById('amount').value;
+            const from = document.getElementById('from-currency').value;
+            const to = document.getElementById('to-currency').value;
+            const result = document.getElementById('result');
+            const loading = document.querySelector('.loading');
+
+            if (!amount) {
+                alert('Please enter an amount');
+                return;
+            }
+
+            try {
+                loading.style.display = 'block';
+                result.textContent = '';
+
+                const response = await fetch(`${API_URL}${from}`);
+                const data = await response.json();
+
+                if (data.result === 'error') {
+                    throw new Error(data['error-type']);
+                }
+
+                const rate = data.conversion_rates[to];
+                const convertedAmount = (amount * rate).toFixed(2);
+
+                result.innerHTML = `
+                    ${amount} ${from} = 
+                    <span style="color: #ffd700; font-weight: bold;">
+                        ${convertedAmount} ${to}
+                    </span>
+                `;
+            } catch (error) {
+                result.textContent = `Error: ${error.message}`;
+                result.style.color = '#ff4444';
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // Add real-time conversion on input change
+        document.getElementById('amount').addEventListener('input', convertCurrency);
+        document.getElementById('from-currency').addEventListener('change', convertCurrency);
+        document.getElementById('to-currency').addEventListener('change', convertCurrency);
+    </script>
+</body>
+
+</html>
